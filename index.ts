@@ -1,16 +1,17 @@
 #!/usr/bin/env node
 import { generateCrud } from './src/utils/template.utils';
+import * as path from 'path';
 
 function main() {
-  const args = process.argv.slice(2);
+  const args = process.argv.slice(1);
 
-  if (args.length !== 2) {
-    console.error('Usage: crud [path to folder] [path to entity]');
+  if (args.length !== 1) {
+    console.error('Usage: crud [path to folder]');
     process.exit(1);
   }
 
   const folder = args[0];
-  const entity = args[1];
+  const entity = path.join(args[0], "entities");
 
   generateCrud(folder, entity)
     .then(() => {
