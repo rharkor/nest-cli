@@ -56,7 +56,7 @@ exports.generateCrud = generateCrud;
 function getEntityName(entityPath) {
     const fileNameFull = entityPath.split("/").pop() || "";
     const fileName = fileNameFull.replace(/\.ts$/, "");
-    const fileNameCut = fileNameFull.replace(/.*$/i, "");
+    const fileNameCut = fileNameFull.replace(/\..*$/i, "");
     const name = (0, utils_1.snakeToCamelCase)(fileNameCut);
     const className = name[0].toUpperCase() + name.slice(1);
     return [fileName, fileNameCut, name, className];

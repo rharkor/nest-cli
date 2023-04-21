@@ -1,6 +1,6 @@
 {
   "name": "@rharkor/nest-crud",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "NestJS CRUD generator",
   "main": "index.js",
   "bin": {

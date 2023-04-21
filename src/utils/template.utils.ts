@@ -74,8 +74,8 @@ function getEntityColumns(entityPath: string): Array<{ name: string; type: strin
 
   function visit(node: ts.Node) {
     if (ts.isClassDeclaration(node)) {
-      node.members.forEach(member => {
-        if (ts.isPropertyDeclaration(member) && hasColumnDecorator(member)) {
+      node.forEachChild(member => {
+        if (ts.isPropertyDeclaration(member) && hasColumnDecorator(member, sourceFile)) {
           const nameNode = member.name;
           const typeNode = member.type;
 
@@ -96,18 +96,22 @@ function getEntityColumns(entityPath: string): Array<{ name: string; type: strin
   return columns;
 }
 
-function hasColumnDecorator(node: ts.PropertyDeclaration): boolean {
-  const decorators = ts.getDecorators(node);
-  if (!decorators) {
-    return false;
-  }
+function hasColumnDecorator(node: ts.PropertyDeclaration, sourceFile: ts.SourceFile): boolean {
+  let hasDecorator = false;
 
-  return decorators.some(decorator => {
-    const expression = decorator.expression;
-    return (
-      ts.isCallExpression(expression) &&
-      ts.isIdentifier(expression.expression) &&
-      expression.expression.getText() === 'Column'
-    );
+  node.forEachChild(child => {
+    if (ts.isDecorator(child)) {
+      const expression = child.expression;
+      if (
+        ts.isCallExpression(expression) &&
+        ts.isIdentifier(expression.expression) &&
+        expression.expression.getText(sourceFile) === 'Column'
+      ) {
+        hasDecorator = true;
+      }
+    }
   });
+
+  return hasDecorator;
 }
+
