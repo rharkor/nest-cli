@@ -20,15 +20,15 @@ export async function generateCrud(
 ): Promise<void> {
   const folderPath = resolvePath(folder);
   const entityPath = resolvePath(entity);
-  const entityName = getEntityName(entityPath);
+  const [fileName, fileNameCut, entityName, entityClassName] = getEntityName(entityPath);
   const entityColumns = getEntityColumns(entityPath);
   const templatesDir = path.join(__dirname, '../templates');
   const files = [
-    { template: "module.ts.ejs", output: `${entityName}.module.ts` },
-    { template: "controller.ts.ejs", output: `${entityName}.controller.ts` },
-    { template: "service.ts.ejs", output: `${entityName}.service.ts` },
-    { template: "dto-create.ts.ejs", output: `dtos/${entityName}-create.dto.ts` },
-    { template: "dto-update.ts.ejs", output: `dtos/${entityName}-update.dto.ts` },
+    { template: "module.ts.ejs", output: `${fileNameCut}.module.ts` },
+    { template: "controller.ts.ejs", output: `${fileNameCut}.controller.ts` },
+    { template: "service.ts.ejs", output: `${fileNameCut}.service.ts` },
+    { template: "dto-create.ts.ejs", output: `dtos/${fileNameCut}-create.dto.ts` },
+    { template: "dto-update.ts.ejs", output: `dtos/${fileNameCut}-update.dto.ts` },
   ];
 
   ensureDirectory(folderPath);
@@ -41,7 +41,7 @@ export async function generateCrud(
     const outputPath = `${folderPath}/${file.output}`;
 
     const templateContent = readFile(templatePath);
-    const outputContent = await ejs.render(templateContent, { entityName, entityColumns });
+    const outputContent = await ejs.render(templateContent, { fileName, fileNameCut, entityName, entityClassName, entityColumns });
 
     writeFile(outputPath, outputContent);
   }
@@ -50,12 +50,15 @@ export async function generateCrud(
 /**
  * Extracts the entity name from the given entity file path.
  * @param {string} entityPath - The path to the entity file.
- * @returns {string} - The entity name.
+ * @returns {string[]} - The entity names.
  */
-function getEntityName(entityPath: string): string {
-  const fileName = entityPath.split("/").pop() || "";
-  const name = fileName.replace(/\..*ts$/, "");
-  return snakeToCamelCase(name);
+function getEntityName(entityPath: string): string[] {
+  const fileNameFull = entityPath.split("/").pop() || "";
+  const fileName = fileNameFull.replace(/\.ts$/, "");
+  const fileNameCut = fileNameFull.replace(/.*$/i, "");
+  const name = snakeToCamelCase(fileNameCut);
+  const className = name[0].toUpperCase() + name.slice(1);
+  return [fileName, fileNameCut, name, className];
 }
 
 /**
@@ -72,7 +75,7 @@ function getEntityColumns(entityPath: string): Array<{ name: string; type: strin
   function visit(node: ts.Node) {
     if (ts.isClassDeclaration(node)) {
       node.members.forEach(member => {
-        if (ts.isPropertyDeclaration(member)) {
+        if (ts.isPropertyDeclaration(member) && hasColumnDecorator(member)) {
           const nameNode = member.name;
           const typeNode = member.type;
 
@@ -91,4 +94,20 @@ function getEntityColumns(entityPath: string): Array<{ name: string; type: strin
   visit(sourceFile);
 
   return columns;
+}
+
+function hasColumnDecorator(node: ts.PropertyDeclaration): boolean {
+  const decorators = ts.getDecorators(node);
+  if (!decorators) {
+    return false;
+  }
+
+  return decorators.some(decorator => {
+    const expression = decorator.expression;
+    return (
+      ts.isCallExpression(expression) &&
+      ts.isIdentifier(expression.expression) &&
+      expression.expression.getText() === 'Column'
+    );
+  });
 }

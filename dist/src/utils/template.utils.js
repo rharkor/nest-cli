@@ -27,6 +27,7 @@ exports.generateCrud = void 0;
 const ejs = __importStar(require("ejs"));
 const ts = __importStar(require("typescript"));
 const path = __importStar(require("path"));
+const utils_1 = require("@rharkor/utils");
 const file_utils_1 = require("./file.utils");
 async function generateCrud(folder, entity) {
     const folderPath = (0, file_utils_1.resolvePath)(folder);
@@ -38,10 +39,11 @@ async function generateCrud(folder, entity) {
         { template: "module.ts.ejs", output: `${entityName}.module.ts` },
         { template: "controller.ts.ejs", output: `${entityName}.controller.ts` },
         { template: "service.ts.ejs", output: `${entityName}.service.ts` },
-        { template: "dto-create.ts.ejs", output: `${entityName}-create.dto.ts` },
-        { template: "dto-update.ts.ejs", output: `${entityName}-update.dto.ts` },
+        { template: "dto-create.ts.ejs", output: `dtos/${entityName}-create.dto.ts` },
+        { template: "dto-update.ts.ejs", output: `dtos/${entityName}-update.dto.ts` },
     ];
     (0, file_utils_1.ensureDirectory)(folderPath);
+    (0, file_utils_1.ensureDirectory)(`${folderPath}/dtos`);
     for (const file of files) {
         const templatePath = `${templatesDir}/${file.template}`;
         const outputPath = `${folderPath}/${file.output}`;
@@ -53,7 +55,8 @@ async function generateCrud(folder, entity) {
 exports.generateCrud = generateCrud;
 function getEntityName(entityPath) {
     const fileName = entityPath.split("/").pop() || "";
-    return fileName.replace(/\.ts$/, "");
+    const name = fileName.replace(/\..*ts$/, "");
+    return (0, utils_1.snakeToCamelCase)(name);
 }
 function getEntityColumns(entityPath) {
     const entityFileContent = (0, file_utils_1.readFile)(entityPath);

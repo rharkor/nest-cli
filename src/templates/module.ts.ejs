@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { <%= entityName %>Controller } from './<%= entityName %>.controller';
-import { <%= entityName %>Service } from './<%= entityName %>.service';
+import { <%= entityClassName %>Controller } from './<%= fileNameCut %>.controller';
+import { <%= entityClassName %>Service } from './<%= fileNameCut %>.service';
 
 @Module({
-    controllers: [<%= entityName %>Controller],
-    providers: [<%= entityName %>Service],
+    controllers: [<%= entityClassName %>Controller],
+    providers: [<%= entityClassName %>Service],
 })
-export class <%= entityName %>Module {}
+export class <%= entityClassName %>Module {}

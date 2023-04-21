@@ -1,37 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { Create<%= entityName %>Dto } from './<%= entityName %>-create.dto';
-import { Update<%= entityName %>Dto } from './<%= entityName %>-update.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Create<%= entityClassName %>Dto } from './<%= fileNameCut %>-create.dto';
+import { Update<%= entityClassName %>Dto } from './<%= fileNameCut %>-update.dto';
 
 @Injectable()
-export class <%= entityName %>Service {
-  private <%= entityName.toLowerCase() %>s: <%= entityName %>[] = [];
+export class <%= entityClassName %>Service {
+  constructor(
+    @InjectRepository(<%= entityClassName %>)
+    private <%= entityName %>Repository: Repository<<%= entityClassName %>>,
+  ) {}
 
   findAll() {
-    return this.<%= entityName.toLowerCase() %>s;
+    return this.<%= entityName %>Repository.find();
   }
 
-  findOne(id: string) {
-    return this.<%= entityName.toLowerCase() %>s.find(e => e.id === id);
+  findOne(id: number) {
+    return this.<%= entityName %>Repository.findOne(id);
   }
 
-  create(create<%= entityName %>Dto: Create<%= entityName %>Dto) {
-    const new<%= entityName %> = { ...create<%= entityName %>Dto, id: Date.now().toString() };
-    this.<%= entityName.toLowerCase() %>s.push(new<%= entityName %>);
-    return new<%= entityName %>;
+  create(create<%= entityClassName %>Dto: Create<%= entityClassName %>Dto) {
+    return this.<%= entityName %>Repository.save(create<%= entityClassName %>Dto);
   }
 
-  update(id: string, update<%= entityName %>Dto: Update<%= entityName %>Dto) {
-    const index = this.<%= entityName.toLowerCase() %>s.findIndex(e => e.id === id);
-    if (index === -1) return null;
-    this.<%= entityName.toLowerCase() %>s[index] = { ...this.<%= entityName.toLowerCase() %>s[index], ...update<%= entityName %>Dto };
-    return this.<%= entityName.toLowerCase() %>s[index];
+  update(id: number, update<%= entityClassName %>Dto: Update<%= entityClassName %>Dto) {
+    return this.<%= entityName %>Repository.update(id, update<%= entityClassName %>Dto);
   }
 
   remove(id: string) {
-    const index = this.<%= entityName.toLowerCase() %>s.findIndex(e => e.id === id);
-    if (index === -1) return null;
-    const removed<%= entityName %> = this.<%= entityName.toLowerCase() %>s.splice(index, 1);
-    return removed<%= entityName %>[0];
+    return this.<%= entityName %>Repository.delete(id);
   }
 }
 
