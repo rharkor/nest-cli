@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
-import { <%= entityName %>Service } from './<%= entityName %>.service';
-import { Create<%= entityName %>Dto } from './<%= entityName %>-create.dto';
-import { Update<%= entityName %>Dto } from './<%= entityName %>-update.dto';
+import { <%= entityClassName %>Service } from './<%= fileNameCut %>.service';
+import { Create<%= entityClassName %>Dto } from './<%= fileNameCut %>-create.dto';
+import { Update<%= entityClassName %>Dto } from './<%= fileNameCut %>-update.dto';
 
-@Controller('<%= entityName.toLowerCase() %>')
-export class <%= entityName %>Controller {
-  constructor(private readonly <%= entityName %>Service: <%= entityName %>Service) {}
+@Controller('<%= fileNameCut.toLowerCase() %>')
+export class <%= entityClassName %>Controller {
+  constructor(private readonly <%= entityName %>Service: <%= entityClassName %>Service) {}
 
   @Get()
   findAll() {
@@ -18,12 +18,12 @@ export class <%= entityName %>Controller {
   }
 
   @Post()
-  create(@Body() create<%= entityName %>Dto: Create<%= entityName %>Dto) {
+  create(@Body() create<%= entityClassName %>Dto: Create<%= entityClassName %>Dto) {
     return this.<%= entityName %>Service.create(create<%= entityName %>Dto);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() update<%= entityName %>Dto: Update<%= entityName %>Dto) {
+  update(@Param('id') id: string, @Body() update<%= entityClassName %>Dto: Update<%= entityClassName %>Dto) {
     return this.<%= entityName %>Service.update(id, update<%= entityName %>Dto);
   }
 
