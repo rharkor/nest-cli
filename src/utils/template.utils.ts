@@ -1,6 +1,7 @@
 import * as ejs from "ejs";
 import * as ts from 'typescript';
 import * as path from "path";
+import {snakeToCamelCase} from "@rharkor/utils"
 import {
   readFile,
   writeFile,
@@ -26,11 +27,14 @@ export async function generateCrud(
     { template: "module.ts.ejs", output: `${entityName}.module.ts` },
     { template: "controller.ts.ejs", output: `${entityName}.controller.ts` },
     { template: "service.ts.ejs", output: `${entityName}.service.ts` },
-    { template: "dto-create.ts.ejs", output: `${entityName}-create.dto.ts` },
-    { template: "dto-update.ts.ejs", output: `${entityName}-update.dto.ts` },
+    { template: "dto-create.ts.ejs", output: `dtos/${entityName}-create.dto.ts` },
+    { template: "dto-update.ts.ejs", output: `dtos/${entityName}-update.dto.ts` },
   ];
 
   ensureDirectory(folderPath);
+
+  // Create dirrectory for dtos
+  ensureDirectory(`${folderPath}/dtos`);
 
   for (const file of files) {
     const templatePath = `${templatesDir}/${file.template}`;
@@ -50,7 +54,8 @@ export async function generateCrud(
  */
 function getEntityName(entityPath: string): string {
   const fileName = entityPath.split("/").pop() || "";
-  return fileName.replace(/\.ts$/, "");
+  const name = fileName.replace(/\..*ts$/, "");
+  return snakeToCamelCase(name);
 }
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "@rharkor/nest-crud",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "description": "NestJS CRUD generator",
   "main": "index.js",
   "bin": {
@@ -8,10 +8,12 @@
   },
   "scripts": {
     "prepare": "npm run build",
-    "build": "rm -rf dist && tsc"
+    "copy-templates": "cp -r ./src/templates ./dist/src",
+    "build": "rm -rf dist && tsc && npm run copy-templates"
   },
   "dependencies": {
     "@nestjs/cli": "^8.0.0",
+    "@rharkor/utils": "^0.1.2",
     "ejs": "^3.1.9"
   },
   "devDependencies": {

@@ -1,0 +1,6 @@
+export class Create<%= entityName %>Dto {
+    <% for (const column of entityColumns) { -%>
+        <%= column.type %> <%= column.name %>;
+      <% } -%>      
+}
+  

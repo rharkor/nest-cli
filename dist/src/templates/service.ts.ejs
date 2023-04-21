@@ -1,0 +1,37 @@
+import { Injectable } from '@nestjs/common';
+import { Create<%= entityName %>Dto } from './<%= entityName %>-create.dto';
+import { Update<%= entityName %>Dto } from './<%= entityName %>-update.dto';
+
+@Injectable()
+export class <%= entityName %>Service {
+  private <%= entityName.toLowerCase() %>s: <%= entityName %>[] = [];
+
+  findAll() {
+    return this.<%= entityName.toLowerCase() %>s;
+  }
+
+  findOne(id: string) {
+    return this.<%= entityName.toLowerCase() %>s.find(e => e.id === id);
+  }
+
+  create(create<%= entityName %>Dto: Create<%= entityName %>Dto) {
+    const new<%= entityName %> = { ...create<%= entityName %>Dto, id: Date.now().toString() };
+    this.<%= entityName.toLowerCase() %>s.push(new<%= entityName %>);
+    return new<%= entityName %>;
+  }
+
+  update(id: string, update<%= entityName %>Dto: Update<%= entityName %>Dto) {
+    const index = this.<%= entityName.toLowerCase() %>s.findIndex(e => e.id === id);
+    if (index === -1) return null;
+    this.<%= entityName.toLowerCase() %>s[index] = { ...this.<%= entityName.toLowerCase() %>s[index], ...update<%= entityName %>Dto };
+    return this.<%= entityName.toLowerCase() %>s[index];
+  }
+
+  remove(id: string) {
+    const index = this.<%= entityName.toLowerCase() %>s.findIndex(e => e.id === id);
+    if (index === -1) return null;
+    const removed<%= entityName %> = this.<%= entityName.toLowerCase() %>s.splice(index, 1);
+    return removed<%= entityName %>[0];
+  }
+}
+

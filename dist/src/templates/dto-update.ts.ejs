@@ -1,0 +1,6 @@
+export class Update<%= entityName %>Dto {
+    <% for (const column of entityColumns) { -%>
+        <%= column.type %> <%= column.name %>;
+      <% } -%>      
+}
+  

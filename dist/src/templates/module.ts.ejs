@@ -1,0 +1,9 @@
+import { Module } from '@nestjs/common';
+import { <%= entityName %>Controller } from './<%= entityName %>.controller';
+import { <%= entityName %>Service } from './<%= entityName %>.service';
+
+@Module({
+    controllers: [<%= entityName %>Controller],
+    providers: [<%= entityName %>Service],
+})
+export class <%= entityName %>Module {}
