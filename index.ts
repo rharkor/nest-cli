@@ -15,6 +15,7 @@ function main() {
   generateCrud(folder, entity)
     .then(() => {
       console.log('CRUD module generated successfully.');
+      console.log("Don't forget to add the module to the imports of the AppModule.");
     })
     .catch((error) => {
       console.error('Error generating CRUD module:', error.message);

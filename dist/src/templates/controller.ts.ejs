@@ -14,11 +14,7 @@ export class <%= entityClassName %>Controller {
 
   @Get(':id')
   findOne(@Param('id') id: number) {
-    return this.<%= entityName %>Service.findOne({
-      where: {
-        id,
-      },
-    });
+    return this.<%= entityName %>Service.findOne(id);
   }
 
   @Post()
