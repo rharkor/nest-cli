@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Create<%= entityClassName %>Dto } from './<%= fileNameCut %>-create.dto';
-import { Update<%= entityClassName %>Dto } from './<%= fileNameCut %>-update.dto';
+import <%= entityClassName %> from './entities/<%= fileNameCut %>.entity';
+import { Create<%= entityClassName %>Dto } from './dtos/<%= fileNameCut %>-create.dto';
+import { Update<%= entityClassName %>Dto } from './dtos/<%= fileNameCut %>-update.dto';
 
 @Injectable()
 export class <%= entityClassName %>Service {
@@ -16,7 +17,11 @@ export class <%= entityClassName %>Service {
   }
 
   findOne(id: number) {
-    return this.<%= entityName %>Repository.findOne(id);
+    return this.<%= entityName %>Repository.findOne({
+      where: {
+        id,
+      },
+    });
   }
 
   create(create<%= entityClassName %>Dto: Create<%= entityClassName %>Dto) {
