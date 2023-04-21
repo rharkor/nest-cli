@@ -1,0 +1,33 @@
+{
+  "name": "@rharkor/nest-crud",
+  "version": "1.0.2",
+  "description": "NestJS CRUD generator",
+  "main": "index.js",
+  "bin": {
+    "nest-crud": "./dist/index.js"
+  },
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "rm -rf dist && tsc"
+  },
+  "dependencies": {
+    "@nestjs/cli": "^8.0.0",
+    "ejs": "^3.1.9"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.0.6",
+    "typescript": "^4.9.5"
+  },
+  "keywords": [
+    "nestjs",
+    "cli",
+    "crud",
+    "generator"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "HUORT Louis",
+  "license": "ISC"
+}
